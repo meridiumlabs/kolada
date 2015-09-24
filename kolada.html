@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="sv" lang="sv">
+<head>
+  <title>Kolada jämförelsetjänst</title>
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <meta charset="UTF-8">
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type='text/javascript' src="./scripts/jquery-1.6.2.min.js"></script>
+  <script type="text/javascript" src="./scripts/knockout-3.2.0.js"></script>
+  <script type="text/javascript" src="./scripts/kolada.js"  charset="8859-1"></script>
+  <link rel="stylesheet" href="./styles/style.css" media="screen,projection" type="text/css" />
+  <link rel="stylesheet" href="./styles/bootstrap.min.css" media="screen,projection" type="text/css" />
+</head>
+<body>
+    <h1>Kommun i jämförelse</h1>
+    <p class="introduction">Detta är ett verktyg för att jämföra olika nycketal i en kommun. Informationen kommer ifrån Kommun- och landstingsdatabasen Kolada som innehåller jämförbara nyckeltal om alla Sveriges kommuner och landsting. </p>
+	<div id="kolada">
+                    <div id="kolada-filter">
+                        <h2>Gör ditt urval</h2>
+                        <p>
+                            <span class="isdesktop">
+                                I varje lista nedan kan du välja ett eller flera alternativ. 
+                                För flera alternativ håll ned Ctrl-tangenten (PC) eller Cmd - tangenten (Mac) och klicka på de alternativ du vill ha med i jämförelsen. 
+                                Du kan också markera flera alternativ i följd genom att hålla ned Shift-tangenten och markera första och sista alternativet i följden så markeras alla alternativ däremellan.
+                            </span>
+                            Använder du mobiltelefon eller läsplatta gör du ditt val genom att klicka i rullgardinslistan och i rutan som öppnas markera de alternativ som du vill ha med i jämförelsen.
+                        </p>
+                        <div id="filteritems">
+                            <div class="filteritem first">
+                                <h3>Nyckeltal</h3>
+                                <div class="metricfilter">
+                                    <label for="metricsfilter">Filtrera nyckeltal</label>
+                                    <input type="text" id="metricsfilter" data-bind="value: query, valueUpdate: 'keyup'" placeholder="Sök…" autocomplete="off" />
+                                </div>
+                                <label for="metricselect">Välj ett/flera nyckeltal</label>
+                                <select id="metricselect" data-bind="options: metrics, optionsText: 'title', value: 'id', selectedOptions: selectedMetrics" multiple="multiple"></select>
+                            </div>
+                            <div class="filteritem second">
+                                <h3>Jämför oss med</h3>
+                                <input id="defaultmunicipalitycheckbox" type="checkbox" value="1292" data-bind="click: defaultMunicipalityCheck, checked: defaultMunicipalityChecked" />
+                                <label for="defaultmunicipalitycheckbox" class="checkboxlabel">Visa endast Ängelholm kommun</label>
+                                <label for="municipalityselect">Välj en/flera kommuner</label>
+                                <select id="municipalityselect" data-bind="options: municipalites, optionsText: 'title', value: 'id', selectedOptions: selectedMunicipalities, enable : !defaultMunicipalityChecked() " multiple="multiple"></select>
+                            </div>
+                            <div class="filteritem">
+                                <h3>Årtal</h3>
+                                <label for="yearselect">Välj ett/flera årtal</label>
+                                <select id="yearselect" data-bind="options: years, selectedOptions: selectedYears" multiple="multiple"></select>
+                            </div> 
+                        </div>
+                        <div id="filterresult">
+                            <p data-bind="css:{center: selectedMetrics().length == 0 || selectedMunicipalities().length == 0}"><strong data-bind="text: selectedMetrics().length == 0 || selectedMunicipalities().length == 0 ? 'Du har inte gjort några urval. Välj nyckeltal och kommun.' : 'Du har valt:'"></strong></p>
+                            <div data-bind="visible:  selectedMetrics().length > 0 &amp;&amp; selectedMunicipalities().length > 0">
+                                <ul data-bind="foreach: selectedMetrics, visible:selectedMetrics().length > 0">
+                                    <li data-bind="text: title"></li> 
+                                </ul>
+                                <p data-bind="text: filterResultText"></p>     
+                            </div>                 
+                        </div>
+                        <div class="alert-info" data-bind="visible:metricsList().length == 0 &amp;&amp; selectedMetrics().length > 0 &amp;&amp; selectedMunicipalities().length > 0">Det finns ingen data för valda alternativ</div>            
+                    </div>
+                    <div id="kolada-kpi-list" aria-live="assertive" aria-atomic="true" data-bind="visible:metricsList().length > 0 &amp;&amp; selectedMetrics().length > 0 &amp;&amp; selectedMunicipalities().length > 0">
+                        <h2>Sökresultat</h2>
+                        <ul class="kolada-list">
+                            <!-- ko foreach: { data: metricsList, as: 'metricsList' } -->
+                            <li>
+                                <a data-bind="text: title, click: $parent.toggleExpanded" class="metricsvalue expanded" href="#"></a>
+                                <div class="kolada-content">
+                                    <a class="koladavalue-toggleview" href="#" data-bind="text : isInTableView() ? 'Visa diagram' : 'Visa tabell', click : $parent.toggleMatricView"></a>
+                                    <table class="table table-condensed table-striped" data-bind="attr: {'summary' : 'Tabell som visar ' + title}, visible: isInTableView() ">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" class="area"><a href="#" data-bind="click: $parent.sortValues">Område</a></th>
+                                                <th scope="col" class="year"><a href="#" data-bind="click: $parent.sortValues">År</a></th>
+                                                <th scope="col" class="value"><a href="#" data-bind="click: $parent.sortValues">Värde</a></th>
+                                                <th scope="col" class="value_m"><a href="#" data-bind="click: $parent.sortValues">Värde män</a></th>
+                                                <th scope="col" class="value_f"><a href="#" data-bind="click: $parent.sortValues">Värde kvinnor</a></th>                                     
+                                            </tr>
+                                        </thead>
+                                        <tbody>                                            
+                                            <!-- ko foreach: metricValues -->                                     
+                                                 <tr>
+                                                    <td data-title="Område" data-bind="text:koladaAPI.municipalities[municipality]"></td>
+                                                    <td data-title="År" data-bind="text:period"></td>
+                                                    <td data-title="Värde" data-bind="text:koladaAPI.formatValue(value)"></td>
+                                                    <td data-title="Värde män" data-bind="text:koladaAPI.formatValue(value_m)"></td>
+                                                    <td data-title="Värde kvinnor" data-bind="text:koladaAPI.formatValue(value_f)"></td>
+                                                </tr>
+                                            <!-- /ko -->
+                                        </tbody>
+                                    </table>
+                                    <div data-bind="attr: {'id': 'chart_div_' + id}, visible: !isInTableView()" class="metricvaluechart"></div>
+                                    <div class="kolada-content-footer">
+                                        <p data-bind="text: metricsList.description"></p>
+                                        <p>Data hämtades med denna URL: <a data-bind="text: $parent.filterUrl, attr: {href : $parent.filterUrl}"></a></p>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- /ko -->
+                        </ul>   
+                    </div>
+                </div>
+            </div>
+	</body>
+</html>

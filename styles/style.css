@@ -1,0 +1,228 @@
+
+/* 6.12 Kolada list
+********************************************/
+body {padding: 0 20px}
+#kolada{display:none}
+#kolada-kpi-list ul {padding-left:0; font-size: 14px;}
+#kolada-kpi-list ul li {list-style: none;padding-left:0px; background:0;margin-bottom:5px;position:relative}
+#kolada-kpi-list li a.metricsvalue
+{
+    background: #dbdfe2 url(/images/icons/arrow-down-yellow.png) no-repeat 98% 15px;
+    display: block;
+    padding: .75em 25px .75em .75em;
+    margin-top: 1px;
+    font-weight:bold;
+    font-size: 1.167em
+}
+#kolada-kpi-list li a.expanded
+{
+     background: #dbdfe2 url(/images/icons/arrow-up-yellow.png) no-repeat 98% 15px;
+}
+
+.kolada-content .table{width:100%;}
+.kolada-content .table th, .kolada-content .table td {
+    padding: 8px;
+    line-height: 20px;
+    text-align: left;
+    vertical-align: top;
+    border-top: 1px solid #dddddd;
+}
+.kolada-content .table tr:nth-child(even)
+{
+    background:#f2f2f2;
+}
+.kolada-content .table th{font-weight:bold}
+.kolada-content-footer {word-wrap: break-word;}
+
+#kolada-kpi-list .metricvaluechart{width:100%;clear:both}
+#kolada-kpi-list .koladavalue-toggleview, #kolada-filter button 
+{
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+	background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+	background-color:#ededed;
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+	text-indent:0;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	color:#777777;
+	font-size:14px;
+	font-weight:bold;
+	line-height:30px;
+	width:125px;
+	text-decoration:none;
+	text-align:center;
+	text-shadow:1px 1px 0px #ffffff;
+	float:right;
+	margin:10px 0px 0px 0px;
+}
+#kolada-kpi-list .koladavalue-toggleview:hover, #kolada-filter button:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+	background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
+	background-color:#dfdfdf;
+}
+#kolada-filter button {float:none;}
+#kolada-kpi-list .koladavalue-toggleview:active {
+	position:relative;
+	top:1px;
+}
+#kolada-kpi-list #ajaxloader {
+	position:absolute;
+	top:100px;
+	right:50%;
+	height:30px;
+	width:30px;
+	background:transparent url(/images/ajax_loader.gif) no-repeat 30% 50%;
+}
+#kolada-kpi-list {border-top: solid 1px #ccc}
+#kolada-kpi-list h2{padding:20px 0px}
+#kolada-filter {margin-bottom:20px}
+#kolada-filter label {display:block;}
+#kolada-filter select
+{
+    height: 200px;
+    width: 100%;
+    border: 1px solid #cccccc;
+    padding: 4px 6px;
+    margin-bottom: 10px; 
+    font-size: 14px;  
+    color: #555555; 
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+#kolada-filter.form{border:none}
+#kolada-filter .filteritem 
+{
+    background-color: #eee;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    padding: 10px;
+    float: left;
+    margin: 10px 20px 20px 0;
+    width:25%
+}
+#kolada-filter #filteritems .filteritem:nth-child(1){background-color: #bbc76d;}
+#kolada-filter #filteritems .filteritem:nth-child(2){background-color: #dbdfe2;}
+#kolada-filter #filteritems .filteritem:nth-child(3){background-color: #de971b;}
+#kolada-filter #filteritems .filteritem.first select{ height: 140px;}
+#kolada-filter #filteritems .filteritem.second select{ height: 160px;}
+
+#kolada-filter .filteritem input[type="text"]{
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    height: 20px;
+    padding: 4px 6px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    width:95%
+}
+#kolada-filter .filteritem .checkboxlabel{display:inline;font-weight:bold;color:#555}
+#kolada-filter .filteritem input[type="checkbox"]{margin: 15px 0}
+#filterresult
+{
+    clear:both;
+    background: #f2f2f2;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 20px 0px 20px 0;
+    font-size:14px;padding-bottom:10px
+}
+#filterresult p, #main-body #filterresult ul {padding-bottom:0;padding-left:1.5em}
+#filterresult p.center {text-align:center;padding-left:0;}
+
+.kolada-content .alert-info {
+    margin-top: 20px;
+    width: 75%;
+    text-align: center;
+}
+#kolada-filter .alert-info, .kolada-content .alert-info
+{
+    font-size: 14px;
+    font-weight: bold;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    color: #333;
+    padding: 8px 35px 8px 14px;
+    margin-bottom: 20px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    border: 1px solid #fbeed5;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.touch #kolada-filter select, .touch #kolada-filter #filteritems .filteritem.first select, .touch #kolada-filter #filteritems .filteritem.second select {height:auto; background-color:#fff}
+.touch #filteritems .metricfilter
+{display:none}
+
+.touch #kolada-filter .filteritem{width:95%;height:auto}
+#kolada-filter select:disabled {
+    background: #dddddd;
+}
+
+@media only screen and (max-width: 640px) {
+
+ /* Kolada */
+    #filteritems .metricfilter
+    {display:none}
+
+    #kolada-filter .filteritem, #kolada-filter .filteritem.first{width:95%;height:auto}
+    #kolada-filter .filteritem select {font-size:16px}
+    #kolada-filter .filteritem .checkboxlabel {color:#333}
+
+    .kolada-content .table, 
+    .kolada-content .table thead, 
+    .kolada-content .table tbody, 
+    .kolada-content .table th, 
+    .kolada-content .table td, 
+    .kolada-content .table tr { 
+	    display: block; 
+    }
+    .kolada-content .table {clear:both}
+    .kolada-content .table thead tr { 
+	    position: absolute;
+	    top: -9999px;
+	    left: -9999px;
+    }
+    .kolada-content .table tr { border: 1px solid #ccc; } 
+    .kolada-content .table td { 
+	    /* Behave  like a "row" */
+	    border: none;
+	    border-bottom: 1px solid #eee; 
+	    position: relative;
+	    padding-left: 50%; 
+	    white-space: normal;
+	    text-align:left;
+	    height: 30px;
+    } 
+    .kolada-content .table td:before { 
+	    position: absolute;
+	    top: 6px;
+	    left: 6px;
+	    width: 45%; 
+	    padding-right: 10px; 
+	    white-space: nowrap;
+	    text-align:left;
+	    font-weight: bold;
+    }
+    .kolada-content .table td:before { content: attr(data-title); }
+    #kolada-filter .isdesktop{display:none}
+
+
+}
